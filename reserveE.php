@@ -5,6 +5,18 @@ session_start(); // เริ่ม session
 $isLoggedIn = isset($_SESSION['username']);
 $username = $_SESSION['username'] ?? '';
 $role = $_SESSION['role'] ?? 'user';
+
+$userPhone = '';
+if ($isLoggedIn) {
+    require_once 'config.php';
+    $stmt = $conn->prepare("SELECT phonenum FROM member_cm WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $stmt->bind_result($userPhone);
+    $stmt->fetch();
+    $stmt->close();
+    // $conn->close(); // อย่าปิด connection ตรงนี้ เพราะใช้ต่อด้านล่าง
+}
 ?>
 
 <!DOCTYPE html>
@@ -54,7 +66,8 @@ $role = $_SESSION['role'] ?? 'user';
             <?php if ($isLoggedIn) echo 'readonly'; ?>>
 
             <label for="phonenum" class="animate-up delay-4">เบอร์โทรศัพท์</label>
-            <input type="text" id="phonenum" name="phonenum" required>
+            <input type="text" id="phonenum" name="phonenum" required value="<?php echo htmlspecialchars($isLoggedIn ? $userPhone : ''); ?>"
+            <?php if ($isLoggedIn) echo 'readonly'; ?>>
 
             <label for="guests" class="animate-up delay-5">จำนวนผู้เข้ากิจกรรม</label>
             <input type="number" id="guests" name="guests" required>
