@@ -109,6 +109,21 @@ if ($isLoggedIn) {
         $date = $_POST['date'];
         $time = $_POST['time'];
 
+        // ตรวจสอบว่ามีการจองกิจกรรมอยู่แล้วหรือไม่ (ยกเว้น admin)
+        if ($username !== 'admin') {
+            $checkStmt = $conn->prepare("SELECT id FROM event_cm WHERE username = ?");
+            $checkStmt->bind_param("s", $name);
+            $checkStmt->execute();
+            $checkStmt->store_result();
+            if ($checkStmt->num_rows > 0) {
+                echo '<div class="alert" style="color: red; text-align: center; margin: 30px 0;">คุณมีการจองกิจกรรมอยู่แล้ว ไม่สามารถจองซ้ำได้</div>';
+                $checkStmt->close();
+                $conn->close();
+                exit();
+            }
+            $checkStmt->close();
+        }
+
         // เตรียมคำสั่ง SQL
         $stmt = $conn->prepare("INSERT INTO event_cm ( event, username, phonenum, guests, date, time) VALUES ( ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssssss", $event, $name, $phonenum, $guests, $date, $time);

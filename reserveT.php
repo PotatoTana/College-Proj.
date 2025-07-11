@@ -102,6 +102,21 @@ if ($conn->connect_error) {
     $date = $_POST['date'];
     $time = $_POST['time'];
 
+    // ตรวจสอบว่ามีการจองอยู่แล้วหรือไม่ (ยกเว้น admin)
+    if ($username !== 'admin') {
+        $checkStmt = $conn->prepare("SELECT id FROM table_cm WHERE username = ?");
+        $checkStmt->bind_param("s", $name);
+        $checkStmt->execute();
+        $checkStmt->store_result();
+        if ($checkStmt->num_rows > 0) {
+            echo '<div class="alert" style="color: red; text-align: center; margin: 30px 0;">คุณมีการจองโต๊ะอยู่แล้ว ไม่สามารถจองซ้ำได้</div>';
+            $checkStmt->close();
+            $conn->close();
+            exit();
+        }
+        $checkStmt->close();
+    }
+
     // เตรียมคำสั่ง SQL
     $stmt = $conn->prepare("INSERT INTO table_cm (username, phonenum, seats, date, time) VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param("sssss", $name, $phonenum, $seats, $date, $time);
