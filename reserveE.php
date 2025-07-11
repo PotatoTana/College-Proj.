@@ -63,11 +63,11 @@ if ($isLoggedIn) {
 
             <label for="name" class="animate-up delay-3">Username</label>
             <input type="text" id="name" name="name" required value="<?php echo htmlspecialchars($isLoggedIn ? $username : ''); ?>" 
-            <?php if ($isLoggedIn) echo 'readonly'; ?>>
+            <?php if ($isLoggedIn && $username !== 'admin') echo 'readonly'; ?>>
 
             <label for="phonenum" class="animate-up delay-4">เบอร์โทรศัพท์</label>
             <input type="text" id="phonenum" name="phonenum" required value="<?php echo htmlspecialchars($isLoggedIn ? $userPhone : ''); ?>"
-            <?php if ($isLoggedIn) echo 'readonly'; ?>>
+            <?php if ($isLoggedIn && $username !== 'admin') echo 'readonly'; ?>>
 
             <label for="guests" class="animate-up delay-5">จำนวนผู้เข้ากิจกรรม</label>
             <input type="number" id="guests" name="guests" required>
@@ -103,7 +103,7 @@ if ($isLoggedIn) {
 
         // รับข้อมูลจากฟอร์ม
         $event = $_POST['event'];
-        $name = $_POST['username'];
+        $name = $_POST['name'];
         $phonenum = $_POST['phonenum'];
         $guests = $_POST['guests'];
         $date = $_POST['date'];
@@ -111,7 +111,7 @@ if ($isLoggedIn) {
 
         // เตรียมคำสั่ง SQL
         $stmt = $conn->prepare("INSERT INTO event_cm ( event, username, phonenum, guests, date, time) VALUES ( ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssss", $event, $username, $phonenum, $guests, $date, $time);
+        $stmt->bind_param("ssssss", $event, $name, $phonenum, $guests, $date, $time);
 
         // บันทึกข้อมูล
         if ($stmt->execute()) {

@@ -52,11 +52,11 @@ if ($isLoggedIn) {
         <form class="reserve-form animate-up delay-2" id="reserveForm" method="POST">
             <label for="name" class="animate-up delay-2">Username</label>
             <input type="text" id="name" name="name" required value="<?php echo htmlspecialchars($isLoggedIn ? $username : ''); ?>" 
-            <?php if ($isLoggedIn) echo 'readonly'; ?>>
+            <?php if ($isLoggedIn && $username !== 'admin') echo 'readonly'; ?>>
 
             <label for="phonenum" class="animate-up delay-3">เบอร์โทรศัพท์</label>
             <input type="text" id="phonenum" name="phonenum" required value="<?php echo htmlspecialchars($isLoggedIn ? $userPhone : ''); ?>"
-            <?php if ($isLoggedIn) echo 'readonly'; ?>>
+            <?php if ($isLoggedIn && $username !== 'admin') echo 'readonly'; ?>>
 
             <label for="seats" class="animate-up delay-4">จำนวนลูกค้าที่มา</label>
             <select id="seats" name="seats">
@@ -96,7 +96,7 @@ if ($conn->connect_error) {
 }
 
     // รับข้อมูลจากฟอร์ม
-    $name = $_POST['username'];
+    $name = $_POST['name'];
     $phonenum = $_POST['phonenum'];
     $seats = $_POST['seats'];
     $date = $_POST['date'];
@@ -104,7 +104,7 @@ if ($conn->connect_error) {
 
     // เตรียมคำสั่ง SQL
     $stmt = $conn->prepare("INSERT INTO table_cm (username, phonenum, seats, date, time) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssss", $username, $phonenum, $seats, $date, $time);
+    $stmt->bind_param("sssss", $name, $phonenum, $seats, $date, $time);
 
     // บันทึกข้อมูล
     if ($stmt->execute()) {
