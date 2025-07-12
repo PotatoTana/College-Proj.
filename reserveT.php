@@ -78,6 +78,7 @@ if ($isLoggedIn) {
 
             <button type="submit" class="animate-up delay-7">จอง</button>
         </form>
+        <div name="note" class="note" id="note"><p>หมายเหตู: สามารถจองได้เฉพาะผู้ที่เป็นสมาชิกเท่านั้น ต้องการสมัครสมาชิกสามารถคลิกที่ตรงนี้</p><a href="register.php">สมัครสมาชิก</a></div>
     </main>
 <?php
             $loginAlert = '';
@@ -133,6 +134,48 @@ if ($conn->connect_error) {
     $conn->close();
 }
 ?>
+
+<?php
+// ดึงวันที่ที่ถูกจองแล้วจาก table_cm และ event_cm
+require_once 'config.php';
+$bookedDates = [];
+$result1 = $conn->query("SELECT date FROM table_cm");
+while ($row = $result1->fetch_assoc()) {
+    $bookedDates[] = $row['date'];
+}
+$result2 = $conn->query("SELECT date FROM event_cm");
+while ($row = $result2->fetch_assoc()) {
+    $bookedDates[] = $row['date'];
+}
+$conn->close();
+?>
+<script>
+    // ส่งวันที่ที่ถูกจองไปยัง JS
+    const bookedDates = <?php echo json_encode($bookedDates); ?>;
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateInput = document.getElementById('date');
+        dateInput.addEventListener('input', function() {
+            if (bookedDates.includes(this.value)) {
+                alert('วันดังกล่าวถูกจองแล้ว กรุณาเลือกวันอื่น');
+                this.value = '';
+            }
+        });
+        // ปิดวันใน native date input (workaround)
+        dateInput.addEventListener('keydown', function(e) {
+            e.preventDefault();
+        });
+        dateInput.addEventListener('change', function() {
+            if (bookedDates.includes(this.value)) {
+                alert('วันดังกล่าวถูกจองแล้ว กรุณาเลือกวันอื่น');
+                this.value = '';
+            }
+        });
+        // ปิดวันในปฏิทิน (สำหรับ browser ที่รองรับ)
+        dateInput.addEventListener('click', function() {
+            this.setAttribute('min', new Date().toISOString().split('T')[0]);
+        });
+    });
+</script>
 
 </body>
 </html>
