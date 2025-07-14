@@ -15,7 +15,6 @@ if ($isLoggedIn) {
     $stmt->bind_result($userPhone);
     $stmt->fetch();
     $stmt->close();
-    // $conn->close(); // อย่าปิด connection ตรงนี้ เพราะใช้ต่อด้านล่าง
 }
 ?>
 
