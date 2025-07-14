@@ -89,14 +89,12 @@ if ($isLoggedIn) {
 ?>
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $isLoggedIn) {
-// เชื่อมต่อฐานข้อมูล
-require_once 'config.php';
+    require_once 'config.php';
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
 
-    // รับข้อมูลจากฟอร์ม
     $name = $_POST['name'];
     $phonenum = $_POST['phonenum'];
     $seats = $_POST['seats'];
@@ -118,11 +116,23 @@ if ($conn->connect_error) {
         $checkStmt->close();
     }
 
-    // เตรียมคำสั่ง SQL
+    // ตรวจสอบจำนวนการจองในวันเดียวกัน (สูงสุด 5)
+    $countStmt = $conn->prepare("SELECT COUNT(*) FROM table_cm WHERE date = ?");
+    $countStmt->bind_param("s", $date);
+    $countStmt->execute();
+    $countStmt->bind_result($bookingCount);
+    $countStmt->fetch();
+    $countStmt->close();
+
+    if ($bookingCount >= 5) {
+        echo '<div class="alert" style="color: red; text-align: center; margin: 30px 0;">วันดังกล่าวมีการจองครบ 5 รายการแล้ว กรุณาเลือกวันอื่น</div>';
+        $conn->close();
+        exit();
+    }
+
     $stmt = $conn->prepare("INSERT INTO table_cm (username, phonenum, seats, date, time) VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param("sssss", $name, $phonenum, $seats, $date, $time);
 
-    // บันทึกข้อมูล
     if ($stmt->execute()) {
         header("Location: checkTables.php");
         exit();
@@ -139,38 +149,42 @@ if ($conn->connect_error) {
 // ดึงวันที่ที่ถูกจองแล้วจาก table_cm และ event_cm
 require_once 'config.php';
 $bookedDates = [];
-$result1 = $conn->query("SELECT date FROM table_cm");
+$dateCounts = [];
+$result1 = $conn->query("SELECT date, COUNT(*) as cnt FROM table_cm GROUP BY date");
 while ($row = $result1->fetch_assoc()) {
-    $bookedDates[] = $row['date'];
+    $dateCounts[$row['date']] = $row['cnt'];
 }
 $result2 = $conn->query("SELECT date FROM event_cm");
 while ($row = $result2->fetch_assoc()) {
-    $bookedDates[] = $row['date'];
+    // ถ้าต้องการนับ event ด้วย ให้เพิ่มเข้าไป
+    if (isset($dateCounts[$row['date']])) {
+        $dateCounts[$row['date']] += 1;
+    } else {
+        $dateCounts[$row['date']] = 1;
+    }
 }
 $conn->close();
 ?>
 <script>
-    // ส่งวันที่ที่ถูกจองไปยัง JS
-    const bookedDates = <?php echo json_encode($bookedDates); ?>;
+    // ส่งวันที่ที่ถูกจองไปยัง JS พร้อมจำนวน
+    const dateCounts = <?php echo json_encode($dateCounts); ?>;
     document.addEventListener('DOMContentLoaded', function() {
         const dateInput = document.getElementById('date');
         dateInput.addEventListener('input', function() {
-            if (bookedDates.includes(this.value)) {
-                alert('วันดังกล่าวถูกจองแล้ว กรุณาเลือกวันอื่น');
+            if (dateCounts[this.value] >= 5) {
+                alert('วันดังกล่าวมีการจองครบ 5 รายการแล้ว กรุณาเลือกวันอื่น');
                 this.value = '';
             }
         });
-        // ปิดวันใน native date input (workaround)
         dateInput.addEventListener('keydown', function(e) {
             e.preventDefault();
         });
         dateInput.addEventListener('change', function() {
-            if (bookedDates.includes(this.value)) {
-                alert('วันดังกล่าวถูกจองแล้ว กรุณาเลือกวันอื่น');
+            if (dateCounts[this.value] >= 5) {
+                alert('วันดังกล่าวมีการจองครบ 5 รายการแล้ว กรุณาเลือกวันอื่น');
                 this.value = '';
             }
         });
-        // ปิดวันในปฏิทิน (สำหรับ browser ที่รองรับ)
         dateInput.addEventListener('click', function() {
             this.setAttribute('min', new Date().toISOString().split('T')[0]);
         });
