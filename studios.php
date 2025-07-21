@@ -144,12 +144,9 @@ $role = $_SESSION['role'] ?? 'user'; // ค่าเริ่มต้นเป�
                     <form class="reserve-form animate-up delay-2" id="EventForm" method="POST">
                         <label for="event">กิจกรรมที่จะจอง หรือจัด</label>
                         <select id="event" name="event">
-                            <option value="Wedding space">Wedding space</option>
                             <option value="Shooting photo Studios no.1">Shooting photo Studios no.1</option>
                             <option value="Shooting photo Studios no.2">Shooting photo Studios no.2</option>
                             <option value="Shooting photo Studios no.3">Shooting photo Studios no.3</option>
-                            <option value="Meeting room">Meeting room</option>
-                            <option value="Private-Meeting">Private-Meeting</option>
                         </select>
                         <label for="name" class="animate-up delay-3">Username</label>
                         <input type="text" id="name" name="name" required value="<?php echo htmlspecialchars($isLoggedIn ? $username : ''); ?>" 
@@ -170,8 +167,8 @@ $role = $_SESSION['role'] ?? 'user'; // ค่าเริ่มต้นเป�
                         <button type="submit" class="animate-up delay-8">จอง</button>
                     </form>
                     <div name="note" class="note" id="note">
-                    <p>หมายเหตู: สามารถจองได้เฉพาะผู้ที่เป็นสมาชิกเท่านั้น ต้องการสมัครสมาชิกสามารถคลิกที่ตรงนี้</p>
-                    <a href="register.php">สมัครสมาชิก</a>
+                    <p class="modal-note" name="modal-note" id="modal-note">หมายเหตู: สามารถจองได้เฉพาะผู้ที่เป็นสมาชิกเท่านั้น ต้องการสมัครสมาชิกสามารถคลิกที่ตรงนี้</p>
+                    <a href="register.php" class="modal-register" name="modal-register" id="modal-register">สมัครสมาชิก</a>
                     </div>
                 </div>
             </div>
@@ -195,11 +192,14 @@ $role = $_SESSION['role'] ?? 'user'; // ค่าเริ่มต้นเป�
                     padding: 30px 20px;
                     border-radius: 8px; 
                     width: 90%; 
-                    max-width: 350px; 
+                    max-width: 600px;
+                    max-height: 700px; 
                     position: relative;
                     box-shadow: 0 4px 24px rgba(0,0,0,0.18);
                     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                     text-align: center;
+                    margin: auto;
+                    margin-top: 800px;
                 }
                 .reserve-form {
                     display: flex;
@@ -223,6 +223,7 @@ $role = $_SESSION['role'] ?? 'user'; // ค่าเริ่มต้นเป�
                 }
                 .reserve-form button {
                     margin-top: 20px;
+                    margin-bottom: 10px;
                     padding: 10px 20px;
                     font-size: 16px;
                     background-color: black;
@@ -234,8 +235,16 @@ $role = $_SESSION['role'] ?? 'user'; // ค่าเริ่มต้นเป�
                 .reserve-form button:hover {
                     background-color: #333;
                 }
-                .note {
-                    margin-top: 20px;
+                .modal-note {
+                    padding-top: 2px;
+                    padding-bottom: 2px;
+                    margin-top: 0;
+                    margin-bottom: 2px;
+                    font-size: 14px;
+                }
+
+                .modal-register {
+                    margin-top: 5px;
                     font-size: 14px;
                 }
             </style>
