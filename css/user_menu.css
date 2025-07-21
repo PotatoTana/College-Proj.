@@ -193,9 +193,26 @@ main {
 
 .drink-scroll {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: row;
+    flex-wrap: nowrap;
     justify-content: flex-start;
     gap: 15px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #f1f1f1;
+}
+.drink-scroll::-webkit-scrollbar {
+    height: 8px;
+}
+.drink-scroll::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+.drink-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
 }
 
 .drink-card {
@@ -751,6 +768,26 @@ main {
         font-size: 1.5em;
     }
 
+    .drink-card {
+        min-width: 140px;
+        width: 140px;
+        margin: 0;
+        flex: 0 0 auto;
+        margin-top: 0;
+    }
+    .drink-card img {
+        height: 100px;
+    }
+    .drink-row h3 {
+        padding-left: 6px;
+        margin-bottom: 2px;
+    }
+    .drink-scroll {
+        gap: 8px;
+        margin-top: 0;
+        padding-top: 0;
+    }
+
     .category-tabs, .subcategory-tabs {
         display: flex;
         flex-wrap: nowrap;
@@ -813,8 +850,28 @@ main {
     }
 
     .menu-list li, .drink-card {
-        width: 90%; /* ใช้พื้นที่หน้าจอให้เต็มกว่าเดิม */
-        margin: 10px auto;
+        width: auto;
+        margin: 0;
+    }
+
+    .drink-card {
+        min-width: 110px;
+        width: 110px;
+        margin: 0;
+        flex: 0 0 auto;
+        margin-top: 0;
+    }
+    .drink-card img {
+        height: 70px;
+    }
+    .drink-row h3 {
+        padding-left: 4px;
+        margin-bottom: 2px;
+    }
+    .drink-scroll {
+        gap: 5px;
+        margin-top: 0;
+        padding-top: 0;
     }
 
     .category-tabs, .subcategory-tabs {
