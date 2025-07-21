@@ -194,3 +194,23 @@ button:hover {
 .delay-2 { animation-delay: 0.3s; }
 .delay-3 { animation-delay: 0.5s; }
 .delay-4 { animation-delay: 0.7s; }
+
+@media (max-width: 768px) {
+    .modal-content { 
+        padding: 16px 8px;
+        border-radius: 8px; 
+        width: 98vw; 
+        max-width: 350px;
+        max-height: 90vh; 
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content { 
+        padding: 16px 8px;
+        border-radius: 8px; 
+        width: 98vw; 
+        max-width: 350px;
+        max-height: 90vh; 
+    }
+}

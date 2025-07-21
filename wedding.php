@@ -120,12 +120,13 @@ $role = $_SESSION['role'] ?? 'user'; // ค่าเริ่มต้นเป�
                     width: 90%; 
                     max-width: 600px;
                     max-height: 700px; 
-                    position: relative;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
                     box-shadow: 0 4px 24px rgba(0,0,0,0.18);
                     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                     text-align: center;
-                    margin: auto;
-                    margin-top: 200px;
                 }
                 .reserve-form {
                     display: flex;
@@ -172,6 +173,65 @@ $role = $_SESSION['role'] ?? 'user'; // ค่าเริ่มต้นเป�
                 .modal-register {
                     margin-top: 5px;
                     font-size: 14px;
+                }
+
+                /* Responsive Design */
+                @media (max-width: 768px) {
+                    .modal-content { 
+                        padding: 16px 8px;
+                        border-radius: 8px; 
+                        width: 98vw; 
+                        max-width: 350px;
+                        max-height: 90vh; 
+                        margin-top: 60px;
+                    }
+                    .reserve-form {
+                        max-width: 250px;
+                    }
+                    .reserve-form label {
+                        font-size: 15px;
+                    }
+                    .reserve-form select, 
+                    .reserve-form input {
+                        font-size: 15px;
+                        padding: 4px;
+                    }
+                    .reserve-form button {
+                        font-size: 15px;
+                        padding: 8px 12px;
+                    }
+                    .modal-note, .modal-register {
+                        font-size: 13px;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .modal-content { 
+                        padding: 16px 8px;
+                        border-radius: 8px; 
+                        width: 98vw; 
+                        max-width: 350px;
+                        max-height: 90vh; 
+                        margin-top: 60px;
+                    }
+                    .reserve-form {
+                        max-width: 250px;
+                    }
+                    .reserve-form label {
+                        font-size: 15px;
+                    }
+                    .reserve-form select, 
+                    .reserve-form input {
+                        font-size: 15px;
+                        padding: 4px;
+                    }
+                    .reserve-form button {
+                        font-size: 15px;
+                        padding: 8px 12px;
+                    }
+                    .modal-note, .modal-register {
+                        font-size: 13px;
+                    }
                 }
             </style>
 
